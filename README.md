@@ -131,7 +131,7 @@ Powyższa wizualizacja przedstawia pięć najbardziej niebezpiecznych lokalizacj
 
 
 ### Accidents by Driver Age Group  
-![Accidents by Age Group](driver_age_groups.jpg)
+![Accidents by Age Group](age_factor.jpg)
 
 Wizualizacja przedstawia liczbę wszystkich wypadków oraz udział wypadków ciężkich (serious + fatal) w zależności od wieku kierowców.
 
@@ -261,7 +261,7 @@ Model umieszczono w pipeline razem z **OneHotEncoder**, co pozwoliło na przetwa
   - warunki atmosferyczne × geometria drogi,  
   - pora dnia × stan nawierzchni.
 
-➡ **Wniosek:** Logistic Regression nie sprawdza się w praktycznej predykcji wypadków śmiertelnych.
+**Wniosek:** Logistic Regression nie sprawdza się w praktycznej predykcji wypadków śmiertelnych.
 
 ---
 ## Model 2 — Random Forest Classifier
@@ -293,7 +293,6 @@ Zastosowano Random Forest z parametrami:
   - deszcz × zakręt × prędkość  
   - wiek × lokalizacja × pogoda  
 
-Wniosek: **Random Forest zdecydowanie przewyższa regresję logistyczną** i jest skutecznym modelem w przewidywaniu wypadków śmiertelnych.
 ---
 ## Podsumowanie modelowania
 
@@ -304,18 +303,19 @@ Wniosek: **Random Forest zdecydowanie przewyższa regresję logistyczną** i jes
 ---
 ## Rola w zespole
 
-Projekt zrealizowany był w 4-osobowym zespole.
+Projekt został zrealizowany w **4-osobowym zespole**, w którym każdy odpowiadał za wybrane elementy analizy.  
 
 **Mój wkład:**
 
-- przygotowanie i łączenie danych,  
-- część EDA i wizualizacji,  
+- przygotowanie, czyszczenie i łączenie danych z wielu źródeł,  
+- wykonanie części analiz eksploracyjnych (EDA) oraz opracowanie wybranych wizualizacji (zwłaszcza dotyczących czynników czasowych i ludzkich)  
 - udział w budowie i ocenie modelu,  
-- współtworzenie wniosków i podsumowania.
+- opracowanie interpretacji wyników, wniosków końcowych i współtworzenie podsumowania projektu.
 
 ---
 
 ## Podsumowanie
 
-Projekt obejmuje pełny proces data-science: od surowych danych, przez wizualizacje i analizę, aż po model predykcyjny.  
-Wyniki wskazują m.in. istotny wpływ prędkości, liczby uczestników i warunków oświetleniowych na powagę obrażeń.
+Projekt obejmował kompletny proces data-science: od pracy na surowych danych, przez analizę i wizualizacje, aż po stworzenie modelu klasyfikującego powagę zdarzeń drogowych.  
+Przeprowadzone analizy potwierdziły kluczową rolę czynników takich jak **limit prędkości**, **warunki oświetleniowe**, **pora dnia** czy **warunki atmosferyczne** w przewidywaniu ryzyka ciężkich obrażeń.  
+Zastosowany model Random Forest pozwolił skutecznie identyfikować zdarzenia o wysokim ryzyku, a wyniki są zgodne z wcześniejszymi obserwacjami z EDA.
