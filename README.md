@@ -230,13 +230,9 @@ Wszystkie zmienne potraktowano jako kategoryczne (w tym `HOUR_FLOAT`) i przekszt
 
 ### Podział danych
 
-Dane podzielono na zbiór treningowy i testowy w proporcji **80/20** z wykorzystaniem:
+Dane podzielono na zbiór treningowy i testowy w proporcji **80/20** z wykorzystaniem parametru stratify=y, który gwarantuje zachowanie proporcji rzadkiej klasy „fatal” (ok. 1,7%) zarówno w zbiorze treningowym, jak i testowym.
 
-```python
-train_test_split(..., test_size=0.2, stratify=y)```
-
-Zastosowanie parametru stratify=y gwarantuje zachowanie proporcji rzadkiej klasy „fatal” (ok. 1,7%) zarówno w zbiorze treningowym, jak i testowym.
-
+---
 
 ## Model 1 — Logistic Regression
 
@@ -267,6 +263,7 @@ Model umieszczono w pipeline razem z **OneHotEncoder**, co pozwoliło na przetwa
 
 ➡ **Wniosek:** Logistic Regression nie sprawdza się w praktycznej predykcji wypadków śmiertelnych.
 
+---
 ## Model 2 — Random Forest Classifier
 
 Zastosowano Random Forest z parametrami:
@@ -297,13 +294,14 @@ Zastosowano Random Forest z parametrami:
   - wiek × lokalizacja × pogoda  
 
 Wniosek: **Random Forest zdecydowanie przewyższa regresję logistyczną** i jest skutecznym modelem w przewidywaniu wypadków śmiertelnych.
-
+---
 ## Podsumowanie modelowania
 
 - **Random Forest osiągnął najwyższą skuteczność** – balanced accuracy ≈ 0.90.  
 - Największy wpływ na śmiertelne zdarzenia mają czynniki środowiskowe i infrastrukturalne.  
 - Logistic Regression działa jako baseline, ale nie nadaje się do praktycznej predykcji przypadków śmiertelnych.
 
+---
 ## Rola w zespole
 
 Projekt zrealizowany był w 4-osobowym zespole.
