@@ -319,3 +319,275 @@ Projekt został zrealizowany w **4-osobowym zespole**, w którym każdy odpowiad
 Projekt obejmował kompletny proces data-science: od pracy na surowych danych, przez analizę i wizualizacje, aż po stworzenie modelu klasyfikującego powagę zdarzeń drogowych.  
 Przeprowadzone analizy potwierdziły kluczową rolę czynników takich jak **limit prędkości**, **warunki oświetleniowe**, **pora dnia** czy **warunki atmosferyczne** w przewidywaniu ryzyka ciężkich obrażeń.  
 Zastosowany model Random Forest pozwolił skutecznie identyfikować zdarzenia o wysokim ryzyku, a wyniki są zgodne z wcześniejszymi obserwacjami z EDA.
+
+
+---
+
+# English Version
+
+# Road Crash Analysis – Data Science Project (Erasmus+, Politecnico di Milano)
+
+This project was completed during an Erasmus+ exchange at **Politecnico di Milano**, as part of a course focused on the practical application of data analysis and machine learning methods.  
+The goal was to perform a detailed analysis of road crash data from the state of Victoria (Australia) and identify environmental, infrastructural and behavioural factors influencing the severity of injuries.
+
+The work covered the full data-science process: data integration, cleaning, preprocessing, exploratory analysis, feature engineering, and predictive modelling.  
+The datasets required merging weather conditions, surface state, and participant-level information with detailed crash records, which involved handling heterogeneous and partially incomplete data.
+
+During the EDA phase, relationships between weather, lighting, road geometry, speed limits and driver characteristics were analysed. Various statistical and visual methods were used to uncover patterns relevant to road safety.  
+A **Random Forest** classifier was later developed to predict injury severity, evaluated using accuracy, precision, recall, balanced accuracy and feature importance metrics.
+
+The project provided hands-on experience with real-life datasets, teamwork and practical use of machine learning in a setting with significant social relevance.
+
+---
+
+## Project Objectives
+
+- Integrate and standardise data from multiple sources (weather, surface conditions, participants, crash details) into a complete dataset.  
+- Conduct exploratory data analysis (EDA) to identify relevant patterns, anomalies and correlations.  
+- Build and evaluate a predictive model estimating the probability of severe injuries in road crashes.  
+- Interpret model outputs and summarise key findings related to road safety.
+
+---
+
+## Data Sources
+
+- `victorian_road_crash_data.csv`  
+- `atmospheric_cond.csv`  
+- `person.csv`  
+- `road_surface_cond.csv`  
+
+All datasets were merged using the `ACCIDENT_NO` key.
+
+---
+
+# Visualisations and Exploratory Analysis (EDA)
+
+### Impact of Lighting Conditions on Crash Frequency and Severity  
+![Light Conditions](light_condition.jpg)
+
+The plot illustrates the number of crashes under different lighting conditions and the share of serious and fatal outcomes.
+
+#### **1. All Accidents**
+Most crashes occur during daylight due to higher traffic volume.  
+Night-time crashes are less frequent but occur under lower traffic intensity.
+
+#### **2. Serious & Fatal**
+Daylight still dominates in raw counts, but the **proportion** of severe crashes increases in darker conditions.
+
+#### **3. Serious/Fatal Share (%)**
+The risk of severe injury rises sharply when visibility decreases.  
+Highest percentages occur in:
+- **Dark (Unlit)**  
+- **Dark (Lit)**  
+- **Low Light**  
+
+---
+
+## Conclusions from the Visualisation
+
+- Lighting conditions have a strong effect on injury severity.  
+- Although most crashes occur during the day, **night-time on unlit roads** carries a disproportionately high risk of serious or fatal outcomes.
+
+---
+
+### Top 10 "Dark (Unlit)" Crash Areas  
+![Top 10 Dark Unlit Areas](top10areas.jpg)
+
+The map shows the ten areas with the highest number of crashes occurring in unlit night-time conditions.
+
+---
+
+### Interpretation
+
+- Crashes cluster around outer metropolitan and semi-rural regions of Victoria.  
+- Areas such as **Yarra Ranges, Casey, Geelong, Melton** show notably high counts.  
+- These regions often feature higher speed limits, limited lighting infrastructure and more complex road geometry.
+
+---
+
+### Five Most Dangerous Locations (Dark Unlit)  
+![Most Dangerous Locations – Dark Unlit](most_dangerous_locations.jpg)
+
+This map highlights the five exact locations with the highest concentration of severe night-time crashes without lighting.
+
+---
+
+### Interpretation
+
+- The most dangerous points are not evenly distributed — they cluster around specific segments of major roads.  
+- Most of these locations lie outside central Melbourne.  
+- Repeated incidents at the same coordinates suggest structural road issues such as poor lighting, inadequate signage or high-speed transitions.
+
+---
+
+### Accidents by Driver Age Group  
+![Accidents by Age Group](age_factor.jpg)
+
+- Young drivers (≤25 and 26–35) account for the highest number of crashes.  
+- Older drivers (**65+**) show the highest proportion of severe accidents.  
+
+**Conclusion:**  
+Crash frequency and crash severity correlate differently with age — younger drivers crash more often, older drivers face more severe outcomes.
+
+---
+
+### Severe Accidents by Age Group & Speed Zone  
+![Severe Accidents by Age & Speed](heatmap_speed.jpg)
+
+- Severity increases with both **age** and **speed limit**.  
+- High-speed zones (90–120 km/h) show the largest share of severe outcomes, especially for drivers **65+**.
+
+---
+
+### Hourly Accident Patterns  
+![Accidents vs Severity by Hour](different_hours.jpg)
+
+- Most crashes occur during the afternoon (14:00–17:00).  
+- The highest severity rates occur at night, especially **1:00–4:00**, despite fewer crashes.  
+- Evening hours also show elevated severity due to low traffic and higher speeds.
+
+---
+
+# Analysis and Modelling
+
+## Preprocessing
+
+Only records with complete information across all required fields were used:
+
+- `LIGHT_CONDITION`  
+- `ROAD_GEOMETRY`  
+- `SPEED_ZONE`  
+- `ACCIDENT_TIME`  
+- `LGA_NAME`  
+- `DAY_OF_WEEK`  
+- `ATMOSPH_COND_DESC`  
+- `SURFACE_COND_DESC`  
+- `FATALITY`
+
+`ACCIDENT_TIME` was transformed into a numeric **HOUR_FLOAT** value (hour + minutes/60).
+
+### Input Features (X)
+
+- LIGHT_CONDITION  
+- ROAD_GEOMETRY  
+- SPEED_ZONE  
+- HOUR_FLOAT  
+- LGA_NAME  
+- DAY_OF_WEEK  
+- ATMOSPH_COND_DESC  
+- SURFACE_COND_DESC  
+
+### Target Variable (y)
+
+- `0` — no fatalities  
+- `1` — ≥1 fatality  
+
+Categorical variables were transformed using **OneHotEncoder(handle_unknown='ignore')**.
+
+---
+
+## Train/Test Split
+
+Data was split into **80/20** sets using stratification:
+
+python
+train_test_split(..., test_size=0.2, stratify=y)
+Stratification preserved the rare **"fatal"** class distribution (~1.7%).
+
+---
+
+## Model 1 — Logistic Regression
+
+Logistic Regression was used as a **baseline model**, placed inside a pipeline with **OneHotEncoder**.
+
+### **Model Results**
+
+- **Accuracy:** 0.98  
+- **Precision (fatal):** 0.47  
+- **Recall (fatal):** 0.02  
+- **Balanced Accuracy:** ~0.51  
+
+### **Confusion Matrix**
+
+- 86605  
+- 32  
+- 1539  
+- 28  
+
+### **Interpretation**
+
+- The model **fails to detect fatal crashes** (recall = 0.02).  
+- Severe class imbalance causes the model to heavily favour the majority class.  
+- As a linear model, Logistic Regression cannot capture nonlinear interactions such as:  
+  - speed × lighting  
+  - weather × road geometry  
+  - time × road surface  
+
+**Conclusion:** Logistic Regression is useful as a baseline but unsuitable for real-world fatality prediction.
+
+---
+
+## Model 2 — Random Forest Classifier
+
+Random Forest was configured with the following parameters:
+
+- `n_estimators=100`  
+- `class_weight='balanced'`  
+- `bootstrap=True`  
+- `oob_score=True`  
+- `n_jobs=-1`  
+
+### **Model Results**
+
+- **Accuracy:** 1.00  
+- **Precision (fatal):** 0.94  
+- **Recall (fatal):** 0.80  
+- **Balanced Accuracy:** ~0.8987  
+
+### **Confusion Matrix**
+
+- 86559  
+- 78  
+- 316  
+- 1251  
+
+### **Interpretation**
+
+- Detects **80%** of fatal crashes.  
+- Balanced accuracy (~0.90) **significantly outperforms** Logistic Regression (~0.51).  
+- Captures nonlinear interactions such as:  
+  - high speed × darkness × no lighting  
+  - weather × geometry × speed  
+  - age × location × conditions  
+
+---
+
+## Summary of Modelling
+
+- **Random Forest achieved the best performance** (balanced accuracy ≈ 0.90).  
+- Environmental and infrastructural factors have the strongest influence on fatal outcomes.  
+- Logistic Regression is inadequate for predicting rare events such as fatalities.
+
+---
+
+## Role in the Team
+
+The project was completed by a **4-person team**.
+
+**My contributions included:**
+
+- data preparation, cleaning and merging,  
+- performing part of the EDA and visualisations (especially temporal and behavioural factors),  
+- contributing to model building and evaluation,  
+- writing conclusions and co-creating the final project summary.
+
+---
+
+## Final Summary
+
+The project covered the complete data-science workflow: raw data processing, exploratory analysis, visualisation and predictive modelling of crash severity.  
+Key factors influencing severe injuries include **speed limits**, **lighting conditions**, **time of day**, **weather**, and **road surface state**.  
+The Random Forest model effectively identified high-risk scenarios, reflecting the patterns uncovered during EDA.
+
+
+
